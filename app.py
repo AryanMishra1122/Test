@@ -1,9 +1,5 @@
 import streamlit as st 
 import pandas as pd
-import numpy as np
-import plotly.express as px
-import cufflinks
-
 
 # Streamlit setup
 st.set_page_config(page_title='Sales Dashboard')
@@ -37,47 +33,21 @@ if df is not None:
 
         # Pie Chart
         st.subheader("Pie Chart")
-        fig_pie = px.pie(
-            df_grouped,
-            values='Revenue',
-            names=groupby_column,
-            title=f'Distribution of Revenue by {groupby_column}',
-            template='plotly_white'
-        )
-        st.plotly_chart(fig_pie)
+        st.write("Distribution of Revenue by", groupby_column)
+        st.write(df_grouped.set_index(groupby_column)['Revenue'].plot.pie(autopct='%1.1f%%'))
 
         # Bar Chart
         st.subheader("Bar Chart")
-        fig_bar = px.bar(
-            df_grouped,
-            x=groupby_column,
-            y='Quantity',
-            color='Revenue',
-            color_continuous_scale=['red', 'yellow', 'green'],
-            template='plotly_white'
-        )
-        st.plotly_chart(fig_bar)
+        st.write("Quantity by", groupby_column)
+        st.write(df_grouped.set_index(groupby_column)['Quantity'].plot.bar())
 
         # Scatter Plot: Unit Cost vs Revenue
         st.subheader("Scatter Plot: Unit Cost vs Revenue")
-        fig_scatter = px.scatter(
-            df,
-            x='Unit Cost',
-            y='Revenue',
-            title='Unit Cost vs Revenue',
-            template='plotly_white'
-        )
-        st.plotly_chart(fig_scatter)
+        st.write("Unit Cost vs Revenue")
+        st.write(df.plot.scatter(x='Unit Cost', y='Revenue'))
 
         # Line Chart: Revenue Over Time
         st.subheader("Line Chart: Revenue Over Time")
         df_monthly_revenue = df.groupby('Month')['Revenue'].sum().reset_index()
-        fig_line = px.line(
-            df_monthly_revenue,
-            x='Month',
-            y='Revenue',
-            title='Monthly Revenue',
-            template='plotly_white'
-        )
-        st.plotly_chart(fig_line)
-
+        st.write("Monthly Revenue")
+        st.write(df_monthly_revenue.plot.line(x='Month', y='Revenue'))
